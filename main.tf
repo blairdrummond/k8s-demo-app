@@ -37,24 +37,19 @@ provider "digitalocean" {
   token = var.do_token
 }
 
+# $ doctl kubernetes options versions
 resource "digitalocean_kubernetes_cluster" "cluster" {
   name    = var.cluster_name
   region  = "tor1"
-  version = "1.20.2-do.0"
+  version = "1.21.3-do.0"
 
   node_pool {
     name       = "autoscale-worker-pool"
-    size       = "s-2vcpu-2gb"
+    size       = "s-2vcpu-4gb"
     auto_scale = true
     min_nodes  = 1
     max_nodes  = 3
   }
-}
-
-# Give everything time to start up
-resource "time_sleep" "wait_10_minutes" {
-  depends_on = [digitalocean_kubernetes_cluster.cluster]
-  create_duration = "600s"
 }
 
 provider "kubernetes" {
@@ -94,6 +89,8 @@ data "kubectl_file_documents" "manifests" {
 }
 
 resource "kubectl_manifest" "argocd" {
+  override_namespace = "argocd"
+
   count     = length(data.kubectl_file_documents.manifests.documents)
   yaml_body = element(data.kubectl_file_documents.manifests.documents, count.index)
 
@@ -104,7 +101,7 @@ resource "kubectl_manifest" "argocd" {
 # Wait for the ArgoCD CRDs to be defined.
 resource "time_sleep" "wait_1_minute" {
   depends_on = [kubectl_manifest.argocd]
-  create_duration = "60s"
+  create_duration = "61s"
 }
 
 resource "kubectl_manifest" "root_application" {
