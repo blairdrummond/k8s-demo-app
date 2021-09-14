@@ -3,7 +3,7 @@ OKGREEN := '\033[92m'
 ENDC := '\033[0m'
 BOLD := '\033[1m'
 
-all: bin init plan
+all: install init plan
 	@echo "Now do a `make apply` or `terraform apply`"
 	@echo "At the end, run `make kubeconfig` to connect"
 
