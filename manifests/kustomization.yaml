@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- minio.yaml
+- nginx.yaml
+
+
+# # These should be in terraform instead
+# configMapGenerator:
+# - name: boathouse-vault-agent-config
+#   files:
+#     - config.hcl=boathouse/config-dev.hcl
+# # The OPA rego policy
+# - name: minio-opa
+#   files:
+#     - gateway/policy.rego
+#
+# # MinIO names and service urls
+# - name: minio-instances-json
+#   namespace: daaas-system
+#   files:
+#     - credential-injector/instances.json
+#
+# # Create this in the terraform instead
+# secretGenerator:
+# - name: azure-blob-storage
+#   literals:
+#   - storageAccountName=XXXXXXXXXXXXXXX
+#   - storageAccountKey=XXXXXXXXXXXXXXX
+#
+# images:
+# - name: StatCan/profiles-controller
+#   newName: k8scc01covidacr.azurecr.io/profiles-controller
+#   newTag: d14d3793a5ee76c5042fdaf9cae31b7e795ef0fe
+#
+# - name: StatCan/kubeflow-opa-sync
+#   newName: k8scc01covidacr.azurecr.io/kubeflow-opa-sync
+#   newTag: latest
+#
+# - name: openpolicyagent/opa
+#   newName: openpolicyagent/opa
+#   newTag: 0.19.1
+#   # newTag: 0.32.0
+#
+# - name: statcan/boathouse
+#   newName: k8scc01covidacr.azurecr.io/boathouse
+#   newTag: latest
+#
+# - name: statcan/minio-credential-injector
+#   newName: k8scc01covidacr.azurecr.io/minio-credential-injector
+#   newTag: 16351d29199f83f97bae991ee9b0e35c5832b5e3

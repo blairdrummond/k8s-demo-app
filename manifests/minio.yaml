@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: minio
+    targetRevision: 7.2.0
+    helm:
+      values: |
+        image:
+          registry: docker.io
+          repository: bitnami/minio
+          tag: 2021.5.27-debian-10-r8
+        ingress:
+          enabled: false
+          hostname: minio.local
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
