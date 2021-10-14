@@ -5,3 +5,4 @@ bin
 *.lock.hcl
 
 .vscode
+.env
