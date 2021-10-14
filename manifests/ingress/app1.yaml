@@ -1,0 +1,34 @@
+# Route traffic from port 80 to port 5678 on pods with the `app: app1` label selector.
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+spec:
+  ports:
+  - port: 80
+    targetPort: 5678
+  selector:
+    app: app1
+---
+# Deployment manages pods with the `app: app1` label selector.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+spec:
+  selector:
+    matchLabels:
+      app: app1
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - name: app1
+        image: hashicorp/http-echo
+        args:
+        - "-text=Welcome to Web App 1!"
+        ports:
+        - containerPort: 5678

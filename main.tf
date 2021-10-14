@@ -32,6 +32,8 @@ variable "cluster_name" {
   description = "A unique name for your cluster"
 }
 
+# 
+
 # Configure the DigitalOcean Provider
 provider "digitalocean" {
   token = var.do_token
@@ -49,6 +51,25 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
     auto_scale = true
     min_nodes  = 1
     max_nodes  = 3
+  }
+}
+
+# Provision Digital Ocean Load Balancer
+resource "digitalocean_loadbalancer" "public" {
+  name   = "k8s-demo-load-balancer"
+  region = "tor1"
+
+  forwarding_rule {
+    entry_port     = 80
+    entry_protocol = "http"
+
+    target_port     = 80
+    target_protocol = "http"
+  }
+
+  healthcheck {
+    port     = 22
+    protocol = "tcp"
   }
 }
 
@@ -76,6 +97,18 @@ resource "kubernetes_namespace" "argocd" {
     # labels = {
     #   "istio-injection" = "enabled"
     # }
+  }
+}
+
+# Create configmap to hold the load balancer ID (this will be used in the NGINX ingress controller
+# manifest to get the UID of the Load Balancer we provisioned through terraform).
+resource "kubernetes_config_map" "example" {
+  metadata {
+    name = "load-balancer-config"
+  }
+
+  data = {
+    load_balancer_uid = digitalocean_loadbalancer.public.id
   }
 }
 
