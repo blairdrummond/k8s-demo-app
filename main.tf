@@ -101,6 +101,12 @@ resource "digitalocean_record" "app2" {
   value  = digitalocean_loadbalancer.public.ip
 }
 
+resource "digitalocean_record" "workaround" {
+  domain = digitalocean_domain.default.name
+  type   = "A"
+  name   = "workaround" # app2.<your_domain>.site
+  value  = digitalocean_loadbalancer.public.ip
+}
 
 provider "kubernetes" {
   host             = digitalocean_kubernetes_cluster.cluster.endpoint
@@ -123,6 +129,15 @@ provider "kubectl" {
 resource "kubernetes_namespace" "argocd" {
   metadata {
     name = "argocd"
+    # labels = {
+    #   "istio-injection" = "enabled"
+    # }
+  }
+}
+
+resource "kubernetes_namespace" "ingress-nginx" {
+  metadata {
+    name = "ingress-nginx"
     # labels = {
     #   "istio-injection" = "enabled"
     # }
@@ -187,8 +202,10 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kubernetes.digitalocean.com/load-balancer-id: "${digitalocean_loadbalancer.public.id}"
+    kubernetes.digitalocean.com/load-balancer-id: ${digitalocean_loadbalancer.public.id}
     service.beta.kubernetes.io/do-loadbalancer-size-slug: "lb-small"
+    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
+    service.beta.kubernetes.io/do-loadbalancer-hostname: "workaround.collinbrown.site"
   labels:
     helm.sh/chart: ingress-nginx-2.11.1
     app.kubernetes.io/name: ingress-nginx
