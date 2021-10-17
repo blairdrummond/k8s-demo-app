@@ -80,6 +80,22 @@ resource "digitalocean_loadbalancer" "public" {
   }
 }
 
+# Provision DNS A records that point to the loadbalancer's external IP address.
+resource "digitalocean_record" "app1" {
+  domain = digitalocean_domain.default.name
+  type   = "A"
+  name   = "@"  # <your_domain>.site
+  value  = digitalocean_loadbalancer.public.ip
+}
+
+resource "digitalocean_record" "app1" {
+  domain = digitalocean_domain.default.name
+  type   = "A"
+  name   = "app2" # app2.<your_domain>.site
+  value  = digitalocean_loadbalancer.public.ip
+}
+
+
 provider "kubernetes" {
   host             = digitalocean_kubernetes_cluster.cluster.endpoint
   token            = digitalocean_kubernetes_cluster.cluster.kube_config[0].token
