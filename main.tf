@@ -31,7 +31,10 @@ variable "github_username" {
 variable "cluster_name" {
   description = "A unique name for your cluster"
 }
-
+# Domain purchased from registrar
+variable "domain" {
+  description = "The top level domain purchased from a domain registrar."
+}
 # hosts for applications 1 and 2 in ingresses example
 variable "app1_host" {
   description = "The hostname for application 1"
@@ -79,7 +82,10 @@ resource "digitalocean_loadbalancer" "public" {
     protocol = "tcp"
   }
 }
-
+# Provision a domain resource for digital ocean
+resource "digitalocean_domain" "default" {
+  name       = var.domain
+}
 # Provision DNS A records that point to the loadbalancer's external IP address.
 resource "digitalocean_record" "app1" {
   domain = digitalocean_domain.default.name
@@ -88,7 +94,7 @@ resource "digitalocean_record" "app1" {
   value  = digitalocean_loadbalancer.public.ip
 }
 
-resource "digitalocean_record" "app1" {
+resource "digitalocean_record" "app2" {
   domain = digitalocean_domain.default.name
   type   = "A"
   name   = "app2" # app2.<your_domain>.site
