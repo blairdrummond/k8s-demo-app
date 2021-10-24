@@ -12,6 +12,8 @@ resources:
 # Ingress Example
 - ingress
 
+patches:
+- controller_service.yaml
 
 # # These should be in terraform instead
 # configMapGenerator:
