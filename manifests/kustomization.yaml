@@ -4,9 +4,6 @@ kind: Kustomization
 resources:
 - minio.yaml
 - nginx.yaml
-# Need to install Cert-Manager CRDs **before** helm chart install
-- https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
-- cert-manager.yaml
 # NGINX Ingress Controller
 - https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/do/deploy.yaml
 # Cert-Manager

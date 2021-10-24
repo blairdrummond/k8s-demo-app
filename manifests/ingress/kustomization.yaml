@@ -2,6 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+# Need to install Cert-Manager CRDs **before** helm chart install
+  - https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
+  - cert-manager.yaml
   - app1.yaml
   - app2.yaml
   - prod_issuer.yaml
