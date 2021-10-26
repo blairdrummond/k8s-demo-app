@@ -53,7 +53,7 @@ provider "digitalocean" {
 resource "digitalocean_kubernetes_cluster" "cluster" {
   name    = var.cluster_name
   region  = "tor1"
-  version = "1.21.3-do.0"
+  version = "1.21.5-do.0"
 
   node_pool {
     name       = "autoscale-worker-pool"

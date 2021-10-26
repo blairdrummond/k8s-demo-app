@@ -8,7 +8,7 @@ resources:
 - https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/do/deploy.yaml
 # Cert-Manager
 - https://github.com/jetstack/cert-manager/releases/download/v0.16.1/cert-manager.yaml
-- prod_issuer.yaml
+- staging_issuer.yaml
 # Ingress Example
 - ingress
 
