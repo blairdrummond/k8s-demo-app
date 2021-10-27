@@ -3,3 +3,6 @@
 *.tfstate.backup
 bin
 *.lock.hcl
+
+.vscode
+.env
